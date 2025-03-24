@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Dino</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #f7f7f7; }
+        canvas { display: block; margin: auto; }
+    </style>
+</head>
+<body>
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 300,
+            physics: {
+                default: 'arcade',
+                arcade: { gravity: { y: 500 }, debug: false }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+        let dino;
+
+        function preload() {
+            this.load.image('ground', 'https://i.imgur.com/aV3m9Fc.png');
+            this.load.spritesheet('dino', 'https://i.imgur.com/4i9w9Jf.png', { frameWidth: 88, frameHeight: 94 });
+        }
+
+        function create() {
+            this.add.image(400, 150, 'ground');
+            
+            dino = this.physics.add.sprite(100, 200, 'dino');
+            dino.setCollideWorldBounds(true);
+            dino.setBounce(0.2);
+
+            this.anims.create({
+                key: 'run',
+                frames: this.anims.generateFrameNumbers('dino', { start: 0, end: 1 }),
+                frameRate: 10,
+                repeat: -1
+            });
+            
+            dino.play('run');
+
+            this.input.keyboard.on('keydown-SPACE', function () {
+                if (dino.body.touching.down) {
+                    dino.setVelocityY(-300);
+                }
+            });
+        }
+
+        function update() {
+            // Atualizações do jogo aqui
+        }
+    </script>
+</body>
+</html>
