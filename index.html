@@ -28,12 +28,12 @@
         };
 
         const game = new Phaser.Game(config);
-        let dino, cactos;
+        let dino, cactos, scoreText, score = 0;
 
         function preload() {
-            this.load.image('ground', 'https://i.imgur.com/aV3m9Fc.png');
-            this.load.spritesheet('dino', 'https://i.imgur.com/4i9w9Jf.png', { frameWidth: 88, frameHeight: 94 });
-            this.load.image('cactus', 'https://i.imgur.com/QJb6nF7.png');
+            this.load.image('ground', 'https://i.imgur.com/Z9yqP2h.png');
+            this.load.spritesheet('dino', 'https://i.imgur.com/OuO7T0P.png', { frameWidth: 88, frameHeight: 94 });
+            this.load.image('cactus', 'https://i.imgur.com/9X5t8JZ.png');
         }
 
         function create() {
@@ -42,6 +42,7 @@
             dino = this.physics.add.sprite(100, 200, 'dino');
             dino.setCollideWorldBounds(true);
             dino.setBounce(0.2);
+            dino.setScale(0.8); // Reduz o tamanho do Dino para melhor proporção
 
             this.anims.create({
                 key: 'run',
@@ -62,6 +63,9 @@
             this.time.addEvent({ delay: 2000, callback: spawnCactus, callbackScope: this, loop: true });
 
             this.physics.add.collider(dino, cactos, gameOver, null, this);
+
+            scoreText = this.add.text(700, 20, 'Score: 0', { fontSize: '20px', fill: '#000' });
+            this.time.addEvent({ delay: 100, callback: updateScore, callbackScope: this, loop: true });
         }
 
         function update() {
@@ -74,13 +78,19 @@
 
         function spawnCactus() {
             let cactus = cactos.create(800, 250, 'cactus');
-            cactus.setVelocityX(-200);
+            cactus.setVelocityX(-200 - score * 2); // Aumenta a velocidade com o tempo
             cactus.setImmovable(true);
+            cactus.setScale(0.8); // Ajusta o tamanho para melhorar aparência
+        }
+
+        function updateScore() {
+            score += 1;
+            scoreText.setText('Score: ' + score);
         }
 
         function gameOver() {
             this.physics.pause();
-            alert('Game Over!');
+            alert('Game Over! Pontuação: ' + score);
             location.reload();
         }
     </script>
